@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import AnalysisCard from './components/AnalysisCard';
 import InputForm from './components/InputForm';
+import './App.css';
 
 export default function App() {
   const [analysis, setAnalysis] = useState(null);
