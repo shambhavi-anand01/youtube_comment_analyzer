@@ -1,10 +1,12 @@
+
 const express = require('express');
 const { google } = require('googleapis');
+const Sentiment = require('sentiment');
 const Comment = require('../models/Comment');
 const router = express.Router();
 // const cors=require('cors');
 
-router.post('/comments/analyze', async (req, res) => {
+router.post('/analyze', async (req, res) => {
   const { videoLink } = req.body;
 
   // Check if the videoLink is provided
@@ -33,27 +35,44 @@ router.post('/comments/analyze', async (req, res) => {
       maxResults: 100,
     });
 
+    const sentiment = new Sentiment();
+
     const comments = response.data.items.map((item) => {
       const comment = item.snippet.topLevelComment.snippet;
-      const maskedUsername = comment.authorDisplayName.replace(/./g, '*');
+      const text = comment.textDisplay;
+
+      // Perform sentiment analysis
+      const result = sentiment.analyze(text);
+      let sentimentCategory = 'neutral';
+
+      // Classify sentiment into agree, disagree, or neutral
+      if (result.score > 2) {
+        sentimentCategory = 'agree';
+      } else if (result.score < -2) {
+        sentimentCategory = 'disagree';
+      }
 
       return {
         videoLink,
-        comment: comment.textDisplay,
-        maskedUsername,
-        sentiment: 'neutral', // Placeholder for sentiment analysis
+        comment: text,
+        maskedUsername: comment.authorDisplayName.replace(/./g, '*'),
+        sentiment: sentimentCategory,
         createdAt: new Date(comment.publishedAt),
       };
     });
 
     // Prevent duplicate comments
-    const existingComments = await Comment.find({ videoLink, comment: comment.textDisplay });
+    const existingComments = await Comment.find({ videoLink });
 
-    if (existingComments.length === 0) {
-      await Comment.insertMany(comments);
+    const newComments = comments.filter(
+      (c) => !existingComments.some((ec) => ec.comment === c.comment)
+    );
+
+    if (newComments.length > 0) {
+      await Comment.insertMany(newComments);
     }
 
-    res.status(200).json({ message: 'Comments fetched and stored successfully', comments });
+    res.status(200).json({ message: 'Comments fetched, analyzed, and stored successfully', comments });
   } catch (error) {
     console.error(error); // Logs the full error
     res.status(500).json({ message: 'Error fetching comments', error: error.toString() });
@@ -61,3 +80,4 @@ router.post('/comments/analyze', async (req, res) => {
 });
 
 module.exports = router;
+
