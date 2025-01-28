@@ -55,7 +55,18 @@ export default function InputForm() {
       ) : (
         // Show Sentiment Chart
         <div className="text-center">
-          <h1 className="font-bold text-2xl mb-4 text-gray-700">Sentiment Analysis Results</h1>
+          <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: '15px',
+        background: 'black',
+        color: '#fff',
+        borderRadius: '0px',
+        textAlign: 'left'
+      }}>
+            <h1 className="font-bold text-2xl mb-4 text-gray-700">Sentiment Analysis Results</h1>
+          </div>
           <SentimentChart sentimentData={sentimentData} />
         </div>
       )}

@@ -1,19 +1,28 @@
 
 import React from 'react';
-// import { useEffect, useRef } from 'react';
-// import { Bar } from "react-chartjs-2";
-import { Pie } from 'react-chartjs-2'; // Example using chart.js
+import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-
 const SentimentChart = ({ sentimentData }) => {
+  if (!sentimentData || sentimentData.length < 3) {
+    return <p>Loading sentiment data...</p>;
+  }
+
+  const [agree, neutral, disagree] = sentimentData;
+  const totalComments = agree + neutral + disagree;
+
+  // Prevent division by zero for percentage calculation
+  const agreePercent = totalComments ? ((agree / totalComments) * 100).toFixed(2) : 0;
+  const neutralPercent = totalComments ? ((neutral / totalComments) * 100).toFixed(2) : 0;
+  const disagreePercent = totalComments ? ((disagree / totalComments) * 100).toFixed(2) : 0;
+
   const data = {
     labels: ['Agree', 'Neutral', 'Disagree'],
     datasets: [
       {
-        data: sentimentData,
+        data: [agree, neutral, disagree],
         backgroundColor: ['#4CAF50', '#FFC107', '#F44336'],
         hoverBackgroundColor: ['#388E3C', '#FFB300', '#D32F2F'],
       },
@@ -21,106 +30,44 @@ const SentimentChart = ({ sentimentData }) => {
   };
 
   return (
-    <div style={{ width: '300px', height: '300px', margin: '0 auto' }}>
+
+    <div style={{ width: '100%', margin: '0 auto', textAlign: 'center', display: 'flex', justifyContent: 'center', gap: '120px' }}>
+    
+    {/* Pie Chart Section */}
+    <div style={{ width: '350px', marginTop: '20px'}}>
       <h3>Sentiment Analysis Chart</h3>
-      <Pie data={data} />
+      <div style={{ width: '300px', height: '300px', margin: '0 auto' }}>
+        <Pie data={data} />
+      </div>
+    </div>
+
+      {/* Sentiment Summary */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginTop: '20px',
+        padding: '15px',
+        background: '#000080',
+        color: '#fff',
+        borderRadius: '10px',
+        textAlign: 'left',
+        gap: '60px'
+      }}>
+        <div>
+          <h2 className="text-lg font-bold">Sentiment Analysis</h2>
+          <p>✅ Agree: <strong>{agree}</strong> ({agreePercent}%)</p>
+          <p>⚖️ Neutral: <strong>{neutral}</strong> ({neutralPercent}%)</p>
+          <p>❌ Disagree: <strong>{disagree}</strong> ({disagreePercent}%)</p>
+        </div>
+        <div style={{ marginTop: '20px'}}>
+          <h2 className="text-lg font-bold">Total Comments</h2>
+          <h1 className="text-2xl font-extrabold">{totalComments}</h1>
+        </div>
+      </div>
     </div>
   );
 };
 
 export default SentimentChart;
 
-
-// import React from "react";
-// import { Pie } from "react-chartjs-2";
-// import { Bar } from "react-chartjs-2";
-// import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement } from "chart.js";
-
-// ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
-
-// const SentimentChart = ({ sentimentData, commentDistribution }) => {
-//   const { agree, neutral, disagree, totalComments } = sentimentData;
-//   const safeCommentDistribution = commentDistribution || [];
-//   const pieData = {
-//     labels: ["Agree", "Neutral", "Disagree"],
-//     datasets: [
-//       {
-//         data: [agree, neutral, disagree],
-//         backgroundColor: ["#4CAF50", "#FFC107", "#F44336"],
-//         hoverBackgroundColor: ["#388E3C", "#FFB300", "#D32F2F"],
-//       },
-//     ],
-//   };
-
-//   const barData = {
-//     labels: safeCommentDistribution.map((data) => data.month),
-//     datasets: [
-//       {
-//         label: "Comments",
-//         data: safeCommentDistribution.map((data) => data.comments),
-//         backgroundColor: "rgba(75, 192, 192, 0.6)",
-//         borderWidth: 1,
-//       },
-//     ],
-//   };
-
-//   const barOptions = {
-//     responsive: true,
-//     maintainAspectRatio: false,
-//     scales: {
-//       y: {
-//         beginAtZero: true,
-//       },
-//     },
-//   };
-
-//   return (
-//     <div style={{ padding: "20px", color: "#fff" }}>
-//       <h1>Analysis Results</h1>
-
-//       {/* Sentiment Analysis */}
-//       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-//         <div>
-//           <h2>Sentiment Analysis</h2>
-//           <p>Agree: {agree}%</p>
-//           <p>Neutral: {neutral}%</p>
-//           <p>Disagree: {disagree}%</p>
-//         </div>
-//         <div>
-//           <h2>Total Comments</h2>
-//           <h1>{totalComments}</h1>
-//         </div>
-//         <div style={{ width: "300px", height: "300px" }}>
-//           <Pie data={pieData} />
-//         </div>
-//       </div>
-
-//       {/* Comment Distribution */}
-//       <div style={{ marginTop: "20px" }}>
-//         <h2>Comment Distribution</h2>
-//         <div style={{ width: "100%", height: "300px" }}>
-//           <Bar data={barData} options={barOptions} />
-//         </div>
-//       </div>
-
-//       {/* Back Button */}
-//       <div style={{ marginTop: "20px" }}>
-//         <button
-//           onClick={() => window.history.back()}
-//           style={{
-//             padding: "10px 20px",
-//             cursor: "pointer",
-//             backgroundColor: "#4CAF50",
-//             border: "none",
-//             color: "#fff",
-//             borderRadius: "5px",
-//           }}
-//         >
-//           Back to Input
-//         </button>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default SentimentChart;
