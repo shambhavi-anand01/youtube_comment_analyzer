@@ -1,0 +1,12 @@
+/* App.css */
+.header {
+  background-color: #f3f4f6;
+  text-align: center;
+  padding: 10px;
+}
+
+.footer {
+  background-color: #111827;
+  color: white;
+  padding: 20px;
+}
