@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/shambhavi-anand01/youtube_comment_analyzer.git/static/css/main.b70348fa.css",
+    "main.js": "/shambhavi-anand01/youtube_comment_analyzer.git/static/js/main.bda62ed4.js",
+    "static/js/488.e75445ad.chunk.js": "/shambhavi-anand01/youtube_comment_analyzer.git/static/js/488.e75445ad.chunk.js",
+    "index.html": "/shambhavi-anand01/youtube_comment_analyzer.git/index.html",
+    "main.b70348fa.css.map": "/shambhavi-anand01/youtube_comment_analyzer.git/static/css/main.b70348fa.css.map",
+    "main.bda62ed4.js.map": "/shambhavi-anand01/youtube_comment_analyzer.git/static/js/main.bda62ed4.js.map",
+    "488.e75445ad.chunk.js.map": "/shambhavi-anand01/youtube_comment_analyzer.git/static/js/488.e75445ad.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.b70348fa.css",
+    "static/js/main.bda62ed4.js"
+  ]
+}
